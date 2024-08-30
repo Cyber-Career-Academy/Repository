@@ -48,9 +48,9 @@ param vmName string = 'vm-avd-prd-01'
 
 param securityType string = 'Standard'
 
-param principalId string = 'principalId'
+param principalId string = 'c97dbfb3-bef3-4a01-9566-0c50ad1dc040'
 
-param addPermissions bool = false
+param addPermissions bool = true
 
 module RG 'Modules/resourceGroup.bicep' = {
   name: '${resourceGroupName}-${date}'
@@ -120,11 +120,11 @@ module vm 'Modules/vmModule.bicep' = {
     adminPassword: adminPassword
     sku: OSVersion
     securityType: securityType
+    avdAgent: false
     vmName: vmName
     vmSize: vmSize
     virtualNetworkName: virtualNetworkName
     subnetName: subnets[0].name
-    hostpoolToken: hostpool.outputs.hostpoolToken
     hostpoolName: hostpool.outputs.hostpoolName
   }
 }
@@ -137,6 +137,6 @@ module permissions 'Modules/azureVirtualDesktopPermissions.bicep' = if (addPermi
   name: 'AVDPermissions-${date}'
   params: {
     principalId: principalId
-    principalType: 'User'
+    principalType: 'Group'
   }
 }

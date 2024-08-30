@@ -91,7 +91,7 @@ param _guidValue string = newGuid()
 
 @description('The token for adding VMs to the hostpool')
 @secure()
-param hostpoolToken string
+param hostpoolToken string?
 
 @description('The name of the hostpool')
 param hostpoolName string

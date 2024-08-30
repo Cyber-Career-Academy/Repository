@@ -23,7 +23,7 @@ param baseTime string = utcNow('u')
 var add1Days = dateTimeAdd(baseTime, 'P1D')
 
 
-resource hostpool 'Microsoft.DesktopVirtualization/hostPools@2021-01-14-preview' = {
+resource hostpool 'Microsoft.DesktopVirtualization/hostPools@2022-04-01-preview' = {
   name: hostPoolName
   location: location
   tags: tags
@@ -44,4 +44,4 @@ resource hostpool 'Microsoft.DesktopVirtualization/hostPools@2021-01-14-preview'
 
 output hostpoolId string = hostpool.id
 output hostpoolName string = hostpool.name
-output hostpoolToken string = hostpool.properties.registrationInfo.token
+// output hostpoolToken string = hostpool.properties.registrationInfo.token

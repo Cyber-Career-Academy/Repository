@@ -44,4 +44,4 @@ param vmName = 'vmavdprd01'
 param securityType = 'Standard'
 
 //Permissions Params
-param principalId = 'b38b577a-000a-4db2-85de-b30bf73a5fb2'
+param principalId = '2cc45a57-5ce6-4f09-b56d-59dff16f05a0'
