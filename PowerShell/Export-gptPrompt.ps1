@@ -1,5 +1,4 @@
 # Define your API key and the OpenAI API endpoint
-
 $endpoint = "https://api.openai.com/v1/chat/completions"
 
 function prompt-OpenAI
@@ -7,7 +6,7 @@ function prompt-OpenAI
 param(
     [string]$model = "gpt-4o-mini",
     $prompt,
-    $apiKey,
+    $akey,
     $filePath
 )
 $chatInput = @{
@@ -37,4 +36,4 @@ $chatResponse | Out-File -FilePath $filePath
 }
 prompt-OpenAI -prompt "Export the your response using comma seperated values, with headers `e
 , give me a list of beginner azure cloud engineer projects, security engineer projects, Devops projects. `e
-Only give the CSV output with no special characters within the prompt" -apiKey $apiKey -filePath .\ITAzureProjects.CSV
+Only give the CSV output with no special characters within the prompt" -apiKey $akey -filePath .\ITAzureProjects.CSV
