@@ -50,7 +50,7 @@ param securityType string = 'Standard'
 
 param principalId string = 'c97dbfb3-bef3-4a01-9566-0c50ad1dc040'
 
-param addPermissions bool = true
+param addPermissions bool = false
 
 module RG 'Modules/resourceGroup.bicep' = {
   name: '${resourceGroupName}-${date}'
@@ -114,21 +114,26 @@ module workspace 'Modules/workspace.bicep' = {
 module vm 'Modules/vmModule.bicep' = {
   name: '${vmName}-${date}'
   scope: resourceGroup(resourceGroupName)
+  dependsOn: [
+    RG
+    hostpool
+  ]
   params: {
     location: location
     adminUsername: adminUsername
     adminPassword: adminPassword
     sku: OSVersion
     securityType: securityType
-    avdAgent: false
+    avdAgent: true
     vmName: vmName
     vmSize: vmSize
     virtualNetworkName: virtualNetworkName
     subnetName: subnets[0].name
     hostpoolName: hostpool.outputs.hostpoolName
+    hostpoolid: hostpool.outputs.hostpoolId
+    // hostpoolToken: reference(resourceId(resourceGroupName, 'Microsoft.DesktopVirtualization/hostPools', hostPoolName),'2022-04-01-preview', 'Full').properties.registrationInfo.token
   }
 }
-
 
 module permissions 'Modules/azureVirtualDesktopPermissions.bicep' = if (addPermissions) {
   dependsOn: [

@@ -101,6 +101,8 @@ param domain string = ''
 
 param avdAgent bool = true
 
+param hostpoolid string?
+
 @description('IMPORTANT: You can use this parameter for the test purpose only as AAD Join is public preview. True if AAD Join, false if AD join')
 param aadJoin bool = true
 
@@ -298,7 +300,7 @@ resource AVDAgent 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = if
         hostPoolName: hostpoolName
         registrationInfoTokenCredential: {
           UserName: 'PLACEHOLDER_DO_NOT_USE'
-          Password: 'PrivateSettingsRef:RegistrationInfoToken'
+          Password: 'PrivateSettingsRef:${reference(hostpoolid, '2021-07-12', 'Full').properties.registrationInfo.token}'
         }
         aadJoin: aadJoin
         UseAgentDownloadEndpoint: true
