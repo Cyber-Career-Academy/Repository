@@ -1,5 +1,5 @@
 # Define your API key and the OpenAI API endpoint
-$apiKey = 'sk-RRYtvM8sBb27cEbatqq4pv1O_qBOrvFRLE_29NNoJoT3BlbkFJ-RfwNq2mKgnwhPSejoaP3-PMifaKdWZ3GeLoBw8lkA'
+
 $endpoint = "https://api.openai.com/v1/chat/completions"
 
 function prompt-OpenAI
