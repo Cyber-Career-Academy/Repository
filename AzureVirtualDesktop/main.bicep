@@ -44,7 +44,7 @@ param OSVersion string = 'win10-22h2-avd'
 
 param vmSize string = 'Standard_B4ms'
 
-param vmName string = 'vm-avd-prd-01'
+param vmName string = 'vm-avdtest-prd-01c'
 
 param securityType string = 'Standard'
 
@@ -83,6 +83,7 @@ module hostpool 'Modules/hostPool.bicep' = {
   name: '${hostPoolName}-${date}'
   scope: resourceGroup(resourceGroupName)
   params: {
+    objectId: principalId
     hostPoolName: hostPoolName
     location: location
     tags: tags
@@ -98,6 +99,10 @@ module applicationGroup 'Modules/applicationGroups.bicep' = {
     applicationGroupName: applicationGroupName
     hostpoolId: hostpool.outputs.hostpoolId
   }
+}
+resource kv 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
+  name: 'kv-${hostPoolName}'
+  scope: resourceGroup(resourceGroupName)
 }
 
 module workspace 'Modules/workspace.bicep' = {
@@ -131,7 +136,7 @@ module vm 'Modules/vmModule.bicep' = {
     subnetName: subnets[0].name
     hostpoolName: hostpool.outputs.hostpoolName
     hostpoolid: hostpool.outputs.hostpoolId
-    // hostpoolToken: reference(resourceId(resourceGroupName, 'Microsoft.DesktopVirtualization/hostPools', hostPoolName),'2022-04-01-preview', 'Full').properties.registrationInfo.token
+    hostpoolToken: hostpool.outputs.registrationInfoToken
   }
 }
 

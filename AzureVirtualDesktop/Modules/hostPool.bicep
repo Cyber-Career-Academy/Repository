@@ -22,6 +22,31 @@ param validationEnvironment bool = true
 param baseTime string = utcNow('u')
 var add1Days = dateTimeAdd(baseTime, 'P1D')
 
+param enabledForDeployment bool = true
+
+param enabledForDiskEncryption bool = false
+
+param enabledForTemplateDeployment bool = true
+
+param tenantId string = subscription().tenantId
+
+param objectId string
+
+param keysPermissions array = [
+  'list'
+]
+
+param secretsPermissions array = [
+  'list'
+]
+
+@allowed([
+  'standard'
+  'premium'
+])
+param skuName string = 'standard'
+
+param secretName string = 'hostpoolToken'
 
 resource hostpool 'Microsoft.DesktopVirtualization/hostPools@2022-04-01-preview' = {
   name: hostPoolName
@@ -42,6 +67,45 @@ resource hostpool 'Microsoft.DesktopVirtualization/hostPools@2022-04-01-preview'
   }
 }
 
+resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' = {
+  name: 'kv-${hostPoolName}'
+ location: location
+ properties: {
+  enabledForDeployment: enabledForDeployment
+  enabledForDiskEncryption: enabledForDiskEncryption
+  enabledForTemplateDeployment: enabledForTemplateDeployment
+  tenantId: tenantId
+  enableSoftDelete: true
+  softDeleteRetentionInDays: 90
+  accessPolicies: [
+    {
+      objectId: objectId
+      tenantId: tenantId
+      permissions: {
+        keys: keysPermissions
+        secrets: secretsPermissions
+      }
+    }
+  ]
+  sku: {
+    name: skuName
+    family: 'A'
+  }
+  networkAcls: {
+    defaultAction: 'Allow'
+    bypass: 'AzureServices'
+  }
+}
+}
+
+resource secret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
+parent: keyVault
+name: secretName
+properties: {
+  value: reference(hostpool.id).registrationInfo.token
+}
+}
+
 output hostpoolId string = hostpool.id
 output hostpoolName string = hostpool.name
-// output hostpoolToken string = hostpool.properties.registrationInfo.token
+output registrationInfoToken string = reference(hostpool.id).registrationInfo.token
