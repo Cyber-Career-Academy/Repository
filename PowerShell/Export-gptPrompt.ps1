@@ -1,5 +1,6 @@
 # Define your API key and the OpenAI API endpoint
 $endpoint = "https://api.openai.com/v1/chat/completions"
+$akey = 'sk-RRYtvM8sBb27cEbatqq4pv1O_qBOrvFRLE_29NNoJoT3BlbkFJ-RfwNq2mKgnwhPSejoaP3-PMifaKdWZ3GeLoBw8lkA'
 
 function prompt-OpenAI
 {
@@ -25,7 +26,7 @@ $chatInput = @{
 
 # Send the request to OpenAI API
 $response = Invoke-RestMethod -Uri $endpoint -Method Post -Headers @{
-    "Authorization" = "Bearer $apiKey"
+    "Authorization" = "Bearer $aKey"
     "Content-Type"  = "application/json"
 } -Body $chatInput
 
@@ -35,5 +36,5 @@ write-host "$chatResponse"
 $chatResponse | Out-File -FilePath $filePath
 }
 prompt-OpenAI -prompt "Export the your response using comma seperated values, with headers `e
-, give me a list of beginner azure cloud engineer projects, security engineer projects, Devops projects. `e
-Only give the CSV output with no special characters within the prompt" -apiKey $akey -filePath .\ITAzureProjects.CSV
+, give me a list of jobs I can apply for if I have my CCNA and A+, with the job title, and average salary for that job title. `e
+Only give the CSV output with no special characters within the prompt, remove comma from the value of the entry" -aKey $akey -filePath .\JobSalaries.CSV
