@@ -34,4 +34,4 @@ $chatResponse | Out-File -FilePath $filePath
 }
 prompt-OpenAI -prompt "Export the your response using comma seperated values, with headers `e
 , give me a list of beginner azure cloud engineer projects, security engineer projects, Devops projects. `e
-Only give the CSV output with no special characters within the prompt" -apiKey $api -filePath .\ITAzureProjects.CSV
+Only give the CSV output with no special characters within the prompt" -api $api -filePath .\ITAzureProjects.CSV
