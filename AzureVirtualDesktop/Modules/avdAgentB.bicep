@@ -1,14 +1,14 @@
-param location string
+param location string = 'westus3'
 
-param tags object
+param tags object = {}
 
-param sessionHostName string
+param sessionHostName string = 'vm-avd-prd-001a'
 
-param HostPoolName string
+param HostPoolName string = 'hp-avd-prd-wus3'
 
 param SessionHostConfigurationVersion string = ''
 
-param hostpoolToken string
+param hostpoolToken string = 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjdDRjJCQTUzNjY3QjA4RTQzRjA0MDkyODNDMTk0NzhGNDc4OEYxMDYiLCJ0eXAiOiJKV1QifQ.eyJSZWdpc3RyYXRpb25JZCI6IjUwMjk4ZDk1LTM5MzQtNDdlYy1iNWUwLTEwZjY3YjNlZDkwNiIsIkJyb2tlclVyaSI6Imh0dHBzOi8vcmRicm9rZXItZy11cy1yMC53dmQubWljcm9zb2Z0LmNvbS8iLCJEaWFnbm9zdGljc1VyaSI6Imh0dHBzOi8vcmRkaWFnbm9zdGljcy1nLXVzLXIwLnd2ZC5taWNyb3NvZnQuY29tLyIsIkVuZHBvaW50UG9vbElkIjoiZWMzODBlMTEtODg2ZS00NWNkLThhMTMtOTVkN2Q2MjA4ZjdjIiwiR2xvYmFsQnJva2VyVXJpIjoiaHR0cHM6Ly9yZGJyb2tlci53dmQubWljcm9zb2Z0LmNvbS8iLCJHZW9ncmFwaHkiOiJVUyIsIkdsb2JhbEJyb2tlclJlc291cmNlSWRVcmkiOiJodHRwczovL2VjMzgwZTExLTg4NmUtNDVjZC04YTEzLTk1ZDdkNjIwOGY3Yy5yZGJyb2tlci53dmQubWljcm9zb2Z0LmNvbS8iLCJCcm9rZXJSZXNvdXJjZUlkVXJpIjoiaHR0cHM6Ly9lYzM4MGUxMS04ODZlLTQ1Y2QtOGExMy05NWQ3ZDYyMDhmN2MucmRicm9rZXItZy11cy1yMC53dmQubWljcm9zb2Z0LmNvbS8iLCJEaWFnbm9zdGljc1Jlc291cmNlSWRVcmkiOiJodHRwczovL2VjMzgwZTExLTg4NmUtNDVjZC04YTEzLTk1ZDdkNjIwOGY3Yy5yZGRpYWdub3N0aWNzLWctdXMtcjAud3ZkLm1pY3Jvc29mdC5jb20vIiwiQUFEVGVuYW50SWQiOiI2YmZiOGVlMi0zOTE0LTQzZjItOGZlZC1iYzRhODdkNmYyMjQiLCJuYmYiOjE3MjY2MTE5MTgsImV4cCI6MTcyNjY5ODMxNSwiaXNzIjoiUkRJbmZyYVRva2VuTWFuYWdlciIsImF1ZCI6IlJEbWkifQ.C7qi82H5n4_pSibfn2s4u4t478I5kglZYXQuP8pRYUuPJQya6ouaGaCUcbqhLfSTAW1MjtETkYvJnzZq-Qavr3YloHHXBqSm29SlTUyY5fMHp63x5vgUyF5_ZVUOIpI-LRifASXXWjpEQmwrj457EClKGWqJ_X1IApnB5BG8cP8E9qML5BDj4YQfTsLPWSIDFkRRFVJPm13SUq-6HF2cwVSRkX4ZrZtefussBxBKm9vn9WFf3mwlKbUWgIDn1juIO6moMRgy9mZY1hwiuZIcADTIdug69xZ-yfNIpPjvIKjD_Jvg3V0WphgG_VN9iW35yaO3xGHbOWJd4F13qcmKfg'
 
 param aadJoin bool = true
 
@@ -18,7 +18,6 @@ param integrityMonitoring bool = false
 @description('System data is used for internal purposes, such as support preview features.')
 param systemData object = {}
 
-@description('IMPORTANT: Please don\'t use this parameter as intune enrollment is not supported yet. True if intune enrollment is selected.  False otherwise')
 param intune bool = false
 
 var artifactsLocation = 'https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/Configuration_1.0.02705.330.zip'
@@ -67,10 +66,7 @@ resource AVDAgent 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = {
       configurationFunction: 'Configuration.ps1\\AddSessionHost'
       properties: {
         hostPoolName: HostPoolName
-        registrationInfoTokenCredential: {
-          UserName: 'PLACEHOLDER_DO_NOT_USE'
-          Password: 'PrivateSettingsRef:RegistrationInfoToken'
-        }
+        RegistrationInfoToken: hostpoolToken
         aadJoin: aadJoin
         UseAgentDownloadEndpoint: true
         aadJoinPreview: (contains(systemData, 'aadJoinPreview') && systemData.aadJoinPreview)
@@ -78,13 +74,8 @@ resource AVDAgent 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = {
         sessionHostConfigurationLastUpdateTime: SessionHostConfigurationVersion
       }
     }
-    protectedSettings: {
-      Items: {
-        RegistrationInfoToken: hostpoolToken
-      }
     }
+    dependsOn: [
+      guestAttestation
+    ]
   }
-  dependsOn: [
-    guestAttestation
-  ]
-}

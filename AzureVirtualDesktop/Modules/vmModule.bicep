@@ -91,7 +91,7 @@ param _guidValue string = newGuid()
 
 @description('The token for adding VMs to the hostpool')
 @secure()
-param hostpoolToken string?
+param hostpoolToken string 
 
 @description('The name of the hostpool')
 param hostpoolName string
@@ -284,7 +284,7 @@ resource guestAttestation 'Microsoft.Compute/virtualMachines/extensions@2018-10-
   }
 }
 
-resource AVDAgent 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = if (avdAgent)  {
+resource AVDAgent 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = if (avdAgent) {
   name: 'Microsoft.PowerShell.DSC'
   parent: virtualMachine
   location: location
@@ -298,10 +298,7 @@ resource AVDAgent 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = if
       configurationFunction: 'Configuration.ps1\\AddSessionHost'
       properties: {
         hostPoolName: hostpoolName
-        registrationInfoTokenCredential: {
-          UserName: 'PLACEHOLDER_DO_NOT_USE'
-          Password: 'PrivateSettingsRef:${reference(hostpoolid, '2021-07-12', 'Full').properties.registrationInfo.token}'
-        }
+        RegistrationInfoToken: hostpoolToken
         aadJoin: aadJoin
         UseAgentDownloadEndpoint: true
         aadJoinPreview: (contains(systemData, 'aadJoinPreview') && systemData.aadJoinPreview)

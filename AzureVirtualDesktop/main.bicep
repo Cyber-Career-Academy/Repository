@@ -44,7 +44,7 @@ param OSVersion string = 'win10-22h2-avd'
 
 param vmSize string = 'Standard_B4ms'
 
-param vmName string = 'vm-avdtest-prd-01c'
+param vmName string = 'vm-avd-prd-001'
 
 param securityType string = 'Standard'
 
@@ -122,6 +122,7 @@ module vm 'Modules/vmModule.bicep' = {
   dependsOn: [
     RG
     hostpool
+    workspace
   ]
   params: {
     location: location
@@ -136,7 +137,7 @@ module vm 'Modules/vmModule.bicep' = {
     subnetName: subnets[0].name
     hostpoolName: hostpool.outputs.hostpoolName
     hostpoolid: hostpool.outputs.hostpoolId
-    hostpoolToken: hostpool.outputs.registrationInfoToken
+    hostpoolToken: kv.getSecret('hostPoolToken')
   }
 }
 

@@ -102,10 +102,10 @@ resource secret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
 parent: keyVault
 name: secretName
 properties: {
-  value: reference(hostpool.id).registrationInfo.token
+  value: first(hostpool.listRegistrationTokens().value).token
 }
 }
 
 output hostpoolId string = hostpool.id
 output hostpoolName string = hostpool.name
-output registrationInfoToken string = reference(hostpool.id).registrationInfo.token
+output registrationInfoToken string = first(hostpool.listRegistrationTokens().value).token
