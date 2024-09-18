@@ -1,3 +1,8 @@
+## September 18 2024 Update
+- Updated output hostpool token function to use the listfunction which allows newer versions of BICEP to output the hostpool token which is a secret.
+- introduced keyvault into hostpool in case Microsoft breaks the secure output of hostpool again.
+- Added existing keyvault so you can pull the secret from the keyvault.
+
 # Azure Virtual Desktop Bicep
 This guide provides simple instructions on how to use the Bicep modules to deploy an Azure Virtual Desktop (AVD) environment. The main file structures the deployment process, referencing different modules for specific resources.
 
